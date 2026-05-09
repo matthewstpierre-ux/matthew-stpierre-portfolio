@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Brand palette */
+  --color-jet: #0A0A0B;
+  --color-void: #000000;
+  --color-blood: #B3001B;
+  --color-hot: #E10A1F;
+  --color-chrome: #C9CDD2;
+  --color-steel: #7A7E85;
+  --color-gunmetal: #3A3D42;
+  --color-bone: #EAEAEA;
+  --color-ash: #9A9A9A;
+  --color-glow: rgba(225, 10, 31, 0.4);
+
+  /* Font families */
+  --font-display: var(--font-bungee-shade);
+  --font-body: var(--font-geist-sans);
+  --font-mono: var(--font-vt323);
+}
+
+:root {
+  --bg: #0A0A0B;
+  --blood: #B3001B;
+  --hot: #E10A1F;
+  --chrome: #C9CDD2;
+  --steel: #7A7E85;
+  --gunmetal: #3A3D42;
+  --bone: #EAEAEA;
+  --ash: #9A9A9A;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--bone);
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gunmetal);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--blood);
+}
+
+/* Chrome underline link animation */
+.chrome-link {
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+}
+.chrome-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--chrome), var(--blood));
+  transition: width 0.3s var(--ease-out);
+}
+.chrome-link:hover::after {
+  width: 100%;
+}
+
+/* Y2K scanline overlay */
+.scanlines {
+  position: relative;
+}
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.05) 2px,
+    rgba(0, 0, 0, 0.05) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--blood);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Skip nav */
+.skip-nav {
+  position: fixed;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  background: var(--blood);
+  color: var(--bone);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  border-radius: 4px;
+  transition: top 0.2s;
+}
+.skip-nav:focus {
+  top: 1rem;
+}
