@@ -28,15 +28,17 @@ export const metadata: Metadata = {
   description:
     "Founder of Lisnin.io. Building tools and platforms for independent artists. Music marketing, web3, and artist development.",
   openGraph: {
-    title: "Matthew St Pierre — Music industry builder",
+    title: "Matthew St Pierre - Professional Career",
     description:
       "Founder of Lisnin.io. Building tools and platforms for independent artists.",
     type: "website",
     url: "https://matthewstpierre.com",
+    images: [{ url: "/images/matthewstpierrethumbnail.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     creator: "@lonelymatts",
+    images: ["/images/matthewstpierrethumbnail.png"],
   },
 };
 
