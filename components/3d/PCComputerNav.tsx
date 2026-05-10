@@ -34,25 +34,83 @@ function PCModel({
   const bootTimer = useRef(0);
 
   useEffect(() => {
-    // Chrome silver with subtle blood-red emissive — matches HaloBackground
+    // Per-mesh material system — 7 named parts, each with distinct depth/tone
+    const getMaterial = (meshName: string): THREE.MeshStandardMaterial => {
+      const n = meshName.toLowerCase();
+
+      if (n.includes("monitor")) {
+        // CRT screen — near-black glass with blood-red emissive scan glow
+        return new THREE.MeshStandardMaterial({
+          color: new THREE.Color("#08080F"),
+          metalness: 0.15,
+          roughness: 0.0,
+          emissive: new THREE.Color("#B3001B"),
+          emissiveIntensity: 0.45,
+        });
+      }
+      if (n.includes("keyboard")) {
+        // Keyboard — darker silver, slightly matte, visually recessed
+        return new THREE.MeshStandardMaterial({
+          color: new THREE.Color("#7A8088"),
+          metalness: 0.82,
+          roughness: 0.28,
+          emissive: new THREE.Color("#B3001B"),
+          emissiveIntensity: 0.02,
+        });
+      }
+      if (n.includes("mouse")) {
+        // Mouse — bright chrome, same family as main body
+        return new THREE.MeshStandardMaterial({
+          color: new THREE.Color("#C9CDD2"),
+          metalness: 0.93,
+          roughness: 0.08,
+          emissive: new THREE.Color("#B3001B"),
+          emissiveIntensity: 0.05,
+        });
+      }
+      if (n.includes("pencil case")) {
+        // Pencil case — darkest chrome, supporting element
+        return new THREE.MeshStandardMaterial({
+          color: new THREE.Color("#5A5E64"),
+          metalness: 0.88,
+          roughness: 0.18,
+          emissive: new THREE.Color("#B3001B"),
+          emissiveIntensity: 0.03,
+        });
+      }
+      if (n === "pencils_material.001_0" || n.startsWith("pencils")) {
+        // Pencils — warm blood-red metallic, the accent pop against chrome
+        return new THREE.MeshStandardMaterial({
+          color: new THREE.Color("#8C2A1A"),
+          metalness: 0.68,
+          roughness: 0.32,
+          emissive: new THREE.Color("#B3001B"),
+          emissiveIntensity: 0.18,
+        });
+      }
+      if (n.includes("paper")) {
+        // Paper — off-white matte, maximum contrast to all chrome
+        return new THREE.MeshStandardMaterial({
+          color: new THREE.Color("#D4D8DC"),
+          metalness: 0.0,
+          roughness: 0.92,
+        });
+      }
+      // Computer base — hero chrome silver with faint red blush
+      return new THREE.MeshStandardMaterial({
+        color: new THREE.Color("#C9CDD2"),
+        metalness: 0.95,
+        roughness: 0.05,
+        emissive: new THREE.Color("#B3001B"),
+        emissiveIntensity: 0.07,
+      });
+    };
+
     scene.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
-        const applyMaterial = (m: THREE.Material) => {
-          if (m instanceof THREE.MeshStandardMaterial) {
-            m.color = new THREE.Color("#C9CDD2");
-            m.metalness = 0.95;
-            m.roughness = 0.05;
-            m.emissive = new THREE.Color("#B3001B");
-            m.emissiveIntensity = 0.06;
-            m.needsUpdate = true;
-          }
-        };
-        if (Array.isArray(mesh.material)) {
-          mesh.material.forEach(applyMaterial);
-        } else {
-          applyMaterial(mesh.material);
-        }
+        const mat = getMaterial(mesh.name);
+        mesh.material = mat;
       }
     });
     // Front face with slight left tilt
