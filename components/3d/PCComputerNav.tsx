@@ -39,13 +39,13 @@ function PCModel({
       const n = meshName.toLowerCase();
 
       if (n.includes("monitor")) {
-        // CRT screen — near-black glass with blood-red emissive scan glow
+        // CRT bezel + screen — silver frame, strong red emissive so screen glows
         return new THREE.MeshStandardMaterial({
-          color: new THREE.Color("#08080F"),
-          metalness: 0.15,
-          roughness: 0.0,
+          color: new THREE.Color("#9A9EA4"),
+          metalness: 0.72,
+          roughness: 0.22,
           emissive: new THREE.Color("#B3001B"),
-          emissiveIntensity: 0.45,
+          emissiveIntensity: 0.6,
         });
       }
       if (n.includes("keyboard")) {
