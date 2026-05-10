@@ -34,22 +34,30 @@ function PCModel({
   const bootTimer = useRef(0);
 
   useEffect(() => {
-    // Keep original colors, just slightly tweak metalness for visibility
+    // Metallic red tint — brand-matched chrome with blood red emissive
     scene.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
+        const applyMaterial = (m: THREE.Material) => {
+          if (m instanceof THREE.MeshStandardMaterial) {
+            m.color = new THREE.Color("#8A3030");
+            m.metalness = 0.9;
+            m.roughness = 0.15;
+            m.emissive = new THREE.Color("#B3001B");
+            m.emissiveIntensity = 0.12;
+            m.needsUpdate = true;
+          }
+        };
         if (Array.isArray(mesh.material)) {
-          mesh.material.forEach((m) => {
-            if (m instanceof THREE.MeshStandardMaterial) {
-              m.roughness = Math.max(m.roughness - 0.05, 0);
-            }
-          });
+          mesh.material.forEach(applyMaterial);
+        } else {
+          applyMaterial(mesh.material);
         }
       }
     });
-    // Face forward — show front face
+    // Front face with slight left tilt
     if (ref.current) {
-      ref.current.rotation.y = Math.PI * 0.5;
+      ref.current.rotation.y = Math.PI * 0.5 - (15 * Math.PI) / 180;
     }
   }, [scene]);
 
@@ -62,7 +70,7 @@ function PCModel({
 
     // Mouse tilt — subtle
     const targetX = mouseY * 0.12;
-    const targetY = Math.PI * 0.5 + mouseX * 0.1;
+    const targetY = Math.PI * 0.5 - (15 * Math.PI) / 180 + mouseX * 0.1;
     ref.current.rotation.x += (targetX - ref.current.rotation.x) * 0.05;
     ref.current.rotation.y += (targetY - ref.current.rotation.y) * 0.05;
 

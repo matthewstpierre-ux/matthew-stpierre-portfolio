@@ -40,8 +40,8 @@ export function Hero() {
       style={{ background: "#000000" }}
       aria-label="Hero"
     >
-      {/* Halo background */}
-      {!isMobile && !prefersReduced && (
+      {/* Halo background — desktop gets scroll parallax, mobile gets static */}
+      {!prefersReduced && !isMobile && (
         <motion.div
           className="absolute inset-0 z-0"
           style={{ scale: haloScale, opacity: haloOpacity }}
@@ -49,9 +49,14 @@ export function Hero() {
           <ChromeSigilHalo className="w-full h-full" />
         </motion.div>
       )}
+      {!prefersReduced && isMobile && (
+        <div className="absolute inset-0 z-0" style={{ opacity: 0.5 }}>
+          <ChromeSigilHalo className="w-full h-full" />
+        </div>
+      )}
 
-      {/* Mobile/reduced fallback gradient */}
-      {(isMobile || prefersReduced) && (
+      {/* Reduced-motion fallback gradient */}
+      {prefersReduced && (
         <div
           className="absolute inset-0 z-0"
           style={{
@@ -85,8 +90,8 @@ export function Hero() {
             {/* Decorative label */}
             <motion.div
               variants={fadeUp}
-              className="flex items-center justify-center mb-10"
-              style={{ gap: "20px" }}
+              className="flex items-center justify-center"
+              style={{ gap: "20px", marginBottom: "28px" }}
             >
               <div style={{ height: "2px", width: "80px", background: "linear-gradient(90deg, transparent, var(--blood))" }} />
               <span style={{ fontFamily: "var(--font-mono)", fontSize: "16px", color: "var(--blood)", letterSpacing: "0.3em", textTransform: "uppercase" }}>
