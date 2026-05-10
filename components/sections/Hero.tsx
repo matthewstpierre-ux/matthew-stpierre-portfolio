@@ -16,8 +16,6 @@ export function Hero() {
   const [isMobile, setIsMobile] = useState(false);
 
   const { scrollY } = useScroll();
-  const haloScale = useTransform(scrollY, [0, 600], [1, 1.3]);
-  const haloOpacity = useTransform(scrollY, [0, 500], [0.7, 0]);
   const textY = useTransform(scrollY, [0, 400], [0, -80]);
 
   useEffect(() => {
@@ -40,14 +38,11 @@ export function Hero() {
       style={{ background: "#000000" }}
       aria-label="Hero"
     >
-      {/* Halo background — desktop gets scroll parallax, mobile gets static */}
+      {/* Halo background */}
       {!prefersReduced && !isMobile && (
-        <motion.div
-          className="absolute inset-0 z-0"
-          style={{ scale: haloScale, opacity: haloOpacity }}
-        >
+        <div className="absolute inset-0 z-0" style={{ opacity: 0.7 }}>
           <ChromeSigilHalo className="w-full h-full" />
-        </motion.div>
+        </div>
       )}
       {!prefersReduced && isMobile && (
         <div className="absolute inset-0 z-0" style={{ opacity: 0.5 }}>
