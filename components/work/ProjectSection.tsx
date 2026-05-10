@@ -154,9 +154,10 @@ export function ProjectSection({
                   borderRadius: "2px",
                   border: "1px solid rgba(201,205,210,0.1)",
                   marginBottom: "24px",
+                  background: imageObjectFit === "contain" ? "rgba(10,10,11,0.8)" : undefined,
                 }}
               >
-                <Image src={heroImage} alt={heroImageAlt ?? name} fill className="object-cover" sizes="100vw" />
+                <Image src={heroImage} alt={heroImageAlt ?? name} fill className={imageObjectFit === "contain" ? "object-contain p-6" : "object-cover"} sizes="100vw" />
               </div>
             )}
 
