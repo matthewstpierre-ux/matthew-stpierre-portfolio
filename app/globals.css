@@ -112,6 +112,11 @@ body {
 /* ─── Section ID scroll offset ───────────────────────────────────────── */
 [id] { scroll-margin-top: 80px; }
 
+/* ─── Hide contact socials on mobile (footer shows them instead) ──────── */
+@media (max-width: 768px) {
+  .contact-socials { display: none !important; }
+}
+
 /* ─── Y2K hero name glitch on hover ──────────────────────────────────── */
 @keyframes glitch-1 {
   0%, 100% { clip-path: inset(0 0 90% 0); transform: translate(-2px, 0); }

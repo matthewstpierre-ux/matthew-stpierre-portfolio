@@ -64,8 +64,8 @@ function SubProjectCard({ title, type, url, description, features, image, coming
       <div style={{ position: "relative", aspectRatio: "16/9", background: "#050508", overflow: "hidden" }}>
         {image ? (
           <>
-            <Image src={image} alt={title} fill className="object-cover" sizes="640px" />
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, transparent 50%, rgba(179,0,27,0.15) 100%)" }} />
+            <Image src={image} alt={title} fill className="object-contain p-4" sizes="640px" style={{ background: "#050508" }} />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, transparent 50%, rgba(179,0,27,0.15) 100%)", pointerEvents: "none" }} />
           </>
         ) : comingSoon ? (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", flexDirection: "column", gap: "16px" }}>

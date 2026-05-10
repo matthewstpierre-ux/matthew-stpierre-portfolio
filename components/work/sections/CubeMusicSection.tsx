@@ -16,6 +16,7 @@ export function CubeMusicSection({ odd }: CubeMusicSectionProps) {
       role="Co-founder & Marketing Lead · 2020–2024"
       heroImage="/images/cubemusicagency.webp"
       heroImageAlt="Cube Music Agency"
+      imageObjectFit="contain"
       odd={odd}
       metrics={[
         { value: "10M+", label: "Total streams across clients" },

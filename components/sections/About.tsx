@@ -3,12 +3,7 @@
 import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import { fadeUp, slideInLeft, slideInRight, staggerContainer, viewportOptions } from "@/lib/motion";
-
-const HaloBackground = dynamic(() => import("@/components/3d/HaloBackground"), {
-  ssr: false,
-});
 
 const bio: { id: string; text: string; links?: { text: string; href: string }[] }[] = [
   {
@@ -101,11 +96,6 @@ export function About() {
       id="about"
       style={{ position: "relative", padding: "96px 0 128px", width: "100%" }}
     >
-      {/* Animated halo backdrop */}
-      {!prefersReduced && (
-        <HaloBackground opacity={0.25} />
-      )}
-
       {/* Top glow */}
       <div
         style={{
@@ -179,7 +169,8 @@ export function About() {
                   alt="Matthew St Pierre"
                   fill
                   className="object-cover object-top"
-                  sizes="380px"
+                  sizes="(max-width: 900px) calc(100vw - 80px), 380px"
+                  quality={100}
                   priority
                 />
                 <div
@@ -243,7 +234,8 @@ export function About() {
           .flex-col-mobile > div:first-child {
             position: relative !important;
             top: auto !important;
-            max-width: 340px;
+            max-width: calc(100% - 0px);
+            width: 100%;
             margin: 0 auto;
           }
         }

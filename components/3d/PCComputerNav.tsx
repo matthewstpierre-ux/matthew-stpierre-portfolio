@@ -47,9 +47,9 @@ function PCModel({
         }
       }
     });
-    // Face forward — rotate to show front face
+    // Face forward — show front face
     if (ref.current) {
-      ref.current.rotation.y = Math.PI * 0.1; // slight angle for depth
+      ref.current.rotation.y = Math.PI * 0.5;
     }
   }, [scene]);
 
@@ -62,7 +62,7 @@ function PCModel({
 
     // Mouse tilt — subtle
     const targetX = mouseY * 0.12;
-    const targetY = Math.PI * 0.1 + mouseX * 0.1;
+    const targetY = Math.PI * 0.5 + mouseX * 0.1;
     ref.current.rotation.x += (targetX - ref.current.rotation.x) * 0.05;
     ref.current.rotation.y += (targetY - ref.current.rotation.y) * 0.05;
 
@@ -114,16 +114,15 @@ export default function PCComputerNav({ visible = true }: PCComputerNavProps) {
     return () => clearTimeout(t);
   }, [pathname]);
 
-  const canvasSize = isMobile ? 140 : 160;
+  const canvasSize = isMobile ? 100 : 160;
 
   return (
     <motion.div
       style={{
         position: "fixed",
         zIndex: 50,
-        ...(isMobile
-          ? { bottom: "16px", left: "50%", transform: "translateX(-50%)" }
-          : { bottom: "24px", right: "24px" }),
+        bottom: isMobile ? "16px" : "24px",
+        right: isMobile ? "16px" : "24px",
       }}
       initial={{ opacity: 0, y: 40, scale: 0.8 }}
       animate={
@@ -145,9 +144,8 @@ export default function PCComputerNav({ visible = true }: PCComputerNavProps) {
               style={{
                 position: "absolute",
                 bottom: "100%",
-                left: "50%",
-                transform: "translateX(-50%)",
-                transformOrigin: "bottom center",
+                right: 0,
+                transformOrigin: "bottom right",
                 marginBottom: "8px",
                 width: "260px",
                 background: "rgba(8, 8, 12, 0.97)",

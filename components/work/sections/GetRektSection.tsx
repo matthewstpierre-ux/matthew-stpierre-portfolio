@@ -16,6 +16,7 @@ export function GetRektSection({ odd }: GetRektSectionProps) {
       role="Co-founder · 2017–2020"
       heroImage="/images/getrektrecords.png"
       heroImageAlt="Get Rekt Records"
+      imageObjectFit="contain"
       odd={odd}
       metrics={[
         { value: "200+", label: "Tickets sold, 2018 showcase" },

@@ -16,6 +16,7 @@ export function LonelyListenersSection({ odd }: LonelyListenersSectionProps) {
       role="Founder · 2022–Present"
       heroImage="/images/llclogo.jpg"
       heroImageAlt="Lonely Listeners Club logo"
+      imageObjectFit="contain"
       odd={odd}
       metrics={[
         { value: "~1,000", label: "Active members" },
@@ -23,7 +24,6 @@ export function LonelyListenersSection({ odd }: LonelyListenersSectionProps) {
         { value: "4+ years", label: "Continuously running" },
       ]}
       links={[
-        { label: "Visit lonelylisteners.com →", href: "https://www.lonelylisteners.com/", primary: true },
         { label: "Community Story →", href: "https://youtu.be/eK2hEM6H9U8" },
       ]}
       copy={
@@ -38,6 +38,13 @@ export function LonelyListenersSection({ odd }: LonelyListenersSectionProps) {
         </p>
       }
     >
+      {/* Website launch note */}
+      <div className="mt-4 px-4 py-3 border border-[#B3001B]/20 rounded-sm bg-[#B3001B]/05">
+        <span className="font-mono text-[11px] text-[#B3001B] tracking-widest uppercase">
+          New lonelylisteners.com launching Summer 2026
+        </span>
+      </div>
+
       {/* Logo evolution */}
       <div className="mt-6 grid grid-cols-2 gap-4">
         <div className="border border-[#C9CDD2]/10 rounded-sm overflow-hidden aspect-square relative">

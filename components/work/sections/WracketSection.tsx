@@ -16,6 +16,7 @@ export function WracketSection({ odd }: WracketSectionProps) {
       role="Business Development · 2022–Present"
       heroImage="/images/wracketlogo.webp"
       heroImageAlt="Wracket Music"
+      imageObjectFit="contain"
       odd={odd}
       metrics={[
         { value: "Apple", label: "2022 product launch" },

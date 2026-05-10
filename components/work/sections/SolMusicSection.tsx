@@ -16,6 +16,7 @@ export function SolMusicSection({ odd }: SolMusicSectionProps) {
       role="Founder · 2021–2024"
       heroImage="/images/solmusicltd.webp"
       heroImageAlt="Sol Music Ltd"
+      imageObjectFit="contain"
       odd={odd}
       metrics={[
         { value: "$120K+", label: "Raised for artists" },

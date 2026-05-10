@@ -24,6 +24,7 @@ export interface ProjectSectionProps {
   role: string;
   heroImage?: string;
   heroImageAlt?: string;
+  imageObjectFit?: "cover" | "contain";
   copy: ReactNode;
   metrics?: ProjectMetric[];
   links?: ProjectLink[];
@@ -72,6 +73,7 @@ export function ProjectSection({
   role,
   heroImage,
   heroImageAlt,
+  imageObjectFit = "cover",
   copy,
   metrics,
   links,
@@ -230,6 +232,7 @@ export function ProjectSection({
                   overflow: "hidden",
                   borderRadius: "2px",
                   border: "1px solid rgba(201,205,210,0.1)",
+                  background: imageObjectFit === "contain" ? "rgba(10,10,11,0.8)" : undefined,
                   cursor: "default",
                 }}
               >
@@ -237,8 +240,9 @@ export function ProjectSection({
                   src={heroImage}
                   alt={heroImageAlt ?? name}
                   fill
-                  className="object-cover"
+                  className={imageObjectFit === "contain" ? "object-contain p-6" : "object-cover"}
                   sizes="(max-width: 1024px) 100vw, 600px"
+                  quality={90}
                 />
                 <div
                   style={{

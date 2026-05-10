@@ -145,9 +145,10 @@ export function Contact() {
             </div>
           </motion.div>
 
-          {/* Socials */}
+          {/* Socials — hidden on mobile (footer handles it there) */}
           <motion.div
             variants={fadeUp}
+            className="contact-socials"
             style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "48px", marginTop: "56px" }}
           >
             {socials.map(({ label, handle, href }) => (
