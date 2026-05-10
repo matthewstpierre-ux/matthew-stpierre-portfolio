@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Volume2, VolumeX } from "lucide-react";
 import {
   isAudioEnabled,
@@ -13,6 +13,7 @@ import {
 import { ease } from "@/lib/motion";
 
 export function BoomboxSoundToggle() {
+  const prefersReduced = useReducedMotion();
   const [enabled, setEnabled] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [bars, setBars] = useState([0.3, 0.6, 0.4, 0.7]);
@@ -21,9 +22,9 @@ export function BoomboxSoundToggle() {
     setEnabled(isAudioEnabled());
   }, []);
 
-  // Animate VU bars when enabled
+  // Animate VU bars when enabled and user hasn't opted out of motion
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || prefersReduced) return;
     const interval = setInterval(() => {
       setBars([
         0.2 + Math.random() * 0.8,
@@ -33,7 +34,7 @@ export function BoomboxSoundToggle() {
       ]);
     }, 120);
     return () => clearInterval(interval);
-  }, [enabled]);
+  }, [enabled, prefersReduced]);
 
   async function toggle() {
     const next = !enabled;
@@ -72,13 +73,13 @@ export function BoomboxSoundToggle() {
                   <motion.div
                     key={i}
                     className="flex-1 rounded-sm"
-                    animate={{ scaleY: h }}
+                    animate={{ scaleY: prefersReduced ? 0.5 : h }}
                     style={{
                       originY: 1,
                       background: `linear-gradient(to top, #E10A1F, #B3001B80)`,
                       height: "100%",
                     }}
-                    transition={{ duration: 0.1 }}
+                    transition={{ duration: prefersReduced ? 0 : 0.1 }}
                   />
                 ))}
               </div>

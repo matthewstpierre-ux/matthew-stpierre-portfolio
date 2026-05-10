@@ -20,9 +20,7 @@ export function CanadianMusicWeekSection({ odd }: CanadianMusicWeekSectionProps)
       metrics={[
         { value: "Speaker", label: "Credit on the official program" },
       ]}
-      links={[
-        { label: "CMW Speaker Page →", href: "https://cmw.net/speakers/matt-st-pierre/", primary: true },
-      ]}
+      links={[]}
       copy={
         <p>
           Canadian Music Week is a week-long industry conference, festival, and

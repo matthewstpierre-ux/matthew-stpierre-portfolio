@@ -9,7 +9,6 @@ import { Lights } from "./Lights";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { ease } from "@/lib/motion";
 
 useGLTF.preload("/models/free-y2k-pc-computer.glb");
@@ -32,48 +31,52 @@ function PCModel({
 }) {
   const { scene } = useGLTF("/models/free-y2k-pc-computer.glb");
   const ref = useRef<THREE.Group>(null!);
-  const bootRef = useRef(0);
+  const bootTimer = useRef(0);
 
   useEffect(() => {
-    // Keep original colors per PRD
+    // Keep original colors, just slightly tweak metalness for visibility
     scene.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
         if (Array.isArray(mesh.material)) {
           mesh.material.forEach((m) => {
             if (m instanceof THREE.MeshStandardMaterial) {
-              m.roughness = Math.min(m.roughness + 0.1, 1);
+              m.roughness = Math.max(m.roughness - 0.05, 0);
             }
           });
         }
       }
     });
+    // Face forward — rotate to show front face
+    if (ref.current) {
+      ref.current.rotation.y = Math.PI * 0.1; // slight angle for depth
+    }
   }, [scene]);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (!ref.current) return;
     const t = state.clock.getElapsedTime();
 
     // Idle float
-    ref.current.position.y = Math.sin(t * 0.8) * 0.04;
+    ref.current.position.y = Math.sin(t * 0.8) * 0.05;
 
-    // Mouse tilt (desktop)
-    const targetX = mouseY * 0.15;
-    const targetY = mouseX * 0.15;
+    // Mouse tilt — subtle
+    const targetX = mouseY * 0.12;
+    const targetY = Math.PI * 0.1 + mouseX * 0.1;
     ref.current.rotation.x += (targetX - ref.current.rotation.x) * 0.05;
     ref.current.rotation.y += (targetY - ref.current.rotation.y) * 0.05;
 
     // Boot glitch
     if (isBooting) {
-      bootRef.current += state.clock.getDelta() * 8;
-      ref.current.position.x = Math.sin(bootRef.current * 20) * 0.05;
+      bootTimer.current += delta * 8;
+      ref.current.position.x = Math.sin(bootTimer.current * 20) * 0.04;
     } else {
       ref.current.position.x += (0 - ref.current.position.x) * 0.1;
-      bootRef.current = 0;
+      bootTimer.current = 0;
     }
   });
 
-  return <primitive ref={ref} object={scene} scale={[1.4, 1.4, 1.4]} />;
+  return <primitive ref={ref} object={scene} scale={[1, 1, 1]} />;
 }
 
 interface PCComputerNavProps {
@@ -96,10 +99,8 @@ export default function PCComputerNav({ visible = true }: PCComputerNavProps) {
   }, []);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    const nx = (e.clientX / window.innerWidth) * 2 - 1;
-    const ny = (e.clientY / window.innerHeight) * 2 - 1;
-    setMouseX(nx);
-    setMouseY(ny);
+    setMouseX((e.clientX / window.innerWidth) * 2 - 1);
+    setMouseY((e.clientY / window.innerHeight) * 2 - 1);
   }, []);
 
   useEffect(() => {
@@ -107,95 +108,189 @@ export default function PCComputerNav({ visible = true }: PCComputerNavProps) {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [handleMouseMove]);
 
-  // Trigger boot glitch on route change
   useEffect(() => {
     setIsBooting(true);
     const t = setTimeout(() => setIsBooting(false), 600);
     return () => clearTimeout(t);
   }, [pathname]);
 
+  const canvasSize = isMobile ? 140 : 160;
+
   return (
     <motion.div
-      className={cn(
-        "fixed z-50",
-        isMobile
-          ? "bottom-4 left-1/2 -translate-x-1/2"
-          : "bottom-6 right-6"
-      )}
+      style={{
+        position: "fixed",
+        zIndex: 50,
+        ...(isMobile
+          ? { bottom: "16px", left: "50%", transform: "translateX(-50%)" }
+          : { bottom: "24px", right: "24px" }),
+      }}
       initial={{ opacity: 0, y: 40, scale: 0.8 }}
       animate={
         visible
           ? { opacity: 1, y: 0, scale: 1 }
           : { opacity: 0, y: 20, scale: 0.9 }
       }
-      transition={{ type: "spring", duration: 0.7, bounce: 0.2 }}
+      transition={{ type: "spring", duration: 0.5, bounce: 0 }}
     >
-      <div className="relative">
-        {/* Nav overlay on screen */}
+      <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: "0px" }}>
+        {/* Nav dropdown — appears above computer */}
         <AnimatePresence>
           {expanded && (
             <motion.div
-              initial={{ opacity: 0, y: 8, scale: 0.95 }}
+              initial={{ opacity: 0, y: 12, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 8, scale: 0.95 }}
+              exit={{ opacity: 0, y: 6, scale: 0.98 }}
               transition={{ duration: 0.2, ease }}
-              className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-[180px]"
+              style={{
+                position: "absolute",
+                bottom: "100%",
+                left: "50%",
+                transform: "translateX(-50%)",
+                transformOrigin: "bottom center",
+                marginBottom: "8px",
+                width: "260px",
+                background: "rgba(8, 8, 12, 0.97)",
+                backdropFilter: "blur(16px)",
+                border: "1px solid rgba(201,205,210,0.25)",
+                borderRadius: "4px",
+                overflow: "hidden",
+              }}
             >
-              <div className="bg-[#0a0a10]/95 backdrop-blur-sm border border-[#C9CDD2]/20 rounded-sm overflow-hidden">
-                {/* CRT header bar */}
-                <div className="px-3 py-1.5 border-b border-[#C9CDD2]/10 flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#E10A1F] animate-pulse" />
-                  <span className="font-mono text-[10px] text-[#7A7E85] tracking-widest">
-                    NAVIGATE.SYS
-                  </span>
-                </div>
-                {/* Nav links */}
-                <nav className="py-1">
-                  {NAV_LINKS.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setExpanded(false)}
-                      className={cn(
-                        "block px-4 py-2 font-mono text-xs tracking-widest transition-colors",
-                        "hover:bg-[#B3001B]/20 hover:text-[#EAEAEA]",
-                        pathname === link.href
-                          ? "text-[#E10A1F]"
-                          : "text-[#9A9A9A]"
-                      )}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </nav>
+              {/* CRT header */}
+              <div
+                style={{
+                  padding: "10px 16px",
+                  borderBottom: "1px solid rgba(201,205,210,0.1)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  background: "rgba(0,0,0,0.4)",
+                }}
+              >
+                <div
+                  style={{
+                    width: "8px",
+                    height: "8px",
+                    borderRadius: "50%",
+                    background: "var(--blood)",
+                    boxShadow: "0 0 6px var(--blood)",
+                    animation: "pulse 2s ease-in-out infinite",
+                  }}
+                />
+                <span
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "11px",
+                    color: "var(--steel)",
+                    letterSpacing: "0.3em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  NAVIGATE.SYS
+                </span>
               </div>
+              {/* Nav links */}
+              <nav>
+                {NAV_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setExpanded(false)}
+                    style={{
+                      display: "block",
+                      padding: "16px 24px",
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "18px",
+                      letterSpacing: "0.2em",
+                      textDecoration: "none",
+                      color: pathname === link.href ? "var(--blood)" : "var(--steel)",
+                      borderBottom: "1px solid rgba(201,205,210,0.06)",
+                      transition: "all 0.15s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.background = "rgba(179,0,27,0.1)";
+                      (e.currentTarget as HTMLElement).style.color = "var(--bone)";
+                      (e.currentTarget as HTMLElement).style.paddingLeft = "32px";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.background = "transparent";
+                      (e.currentTarget as HTMLElement).style.color = pathname === link.href ? "var(--blood)" : "var(--steel)";
+                      (e.currentTarget as HTMLElement).style.paddingLeft = "24px";
+                    }}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* The PC Computer 3D element */}
+        {/* Computer 3D + MENU label */}
         <button
           onClick={() => setExpanded((v) => !v)}
           aria-label={expanded ? "Close navigation" : "Open navigation"}
           aria-expanded={expanded}
-          className="relative block cursor-pointer focus:outline-none"
-          style={{ width: isMobile ? 100 : 120, height: isMobile ? 100 : 120 }}
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "2px",
+          }}
         >
-          <Scene
-            camera={{ position: [0, 0.5, 4], fov: 45 }}
-            dpr={[1, 1.5]}
-          >
-            <Lights />
-            <PCModel mouseX={mouseX} mouseY={mouseY} isBooting={isBooting} />
-          </Scene>
-          {/* Glow under */}
+          {/* 3D computer */}
           <div
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-4 rounded-full pointer-events-none"
             style={{
-              background:
-                "radial-gradient(ellipse, rgba(179,0,27,0.4) 0%, transparent 70%)",
+              width: `${canvasSize}px`,
+              height: `${canvasSize}px`,
+              position: "relative",
             }}
-          />
+          >
+            <Scene
+              camera={{ position: [0, 0.8, 6], fov: 38 }}
+              dpr={[1, 1.5]}
+            >
+              <Lights />
+              <PCModel mouseX={mouseX} mouseY={mouseY} isBooting={isBooting} />
+            </Scene>
+            {/* Glow beneath */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: "80px",
+                height: "16px",
+                borderRadius: "50%",
+                background: "radial-gradient(ellipse, rgba(179,0,27,0.5) 0%, transparent 70%)",
+                pointerEvents: "none",
+              }}
+            />
+          </div>
+
+          {/* MENU label */}
+          <div
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: "13px",
+              letterSpacing: "0.3em",
+              color: expanded ? "var(--blood)" : "var(--steel)",
+              textTransform: "uppercase",
+              transition: "color 0.2s ease",
+              borderTop: "1px solid rgba(201,205,210,0.1)",
+              paddingTop: "6px",
+              width: "100%",
+              textAlign: "center",
+            }}
+          >
+            {expanded ? "CLOSE" : "MENU"}
+          </div>
         </button>
       </div>
     </motion.div>

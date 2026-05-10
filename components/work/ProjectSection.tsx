@@ -3,16 +3,7 @@
 import { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
-import {
-  fadeUp,
-  slideInLeft,
-  slideInRight,
-  staggerContainer,
-  viewportOptions,
-} from "@/lib/motion";
-import { ChromeButton } from "@/components/ui/ChromeButton";
-import { ChromeCard } from "@/components/ui/ChromeCard";
-import { cn } from "@/lib/utils";
+import { fadeUp, slideInLeft, slideInRight, staggerContainer, viewportOptions } from "@/lib/motion";
 
 export interface ProjectMetric {
   value: string;
@@ -37,22 +28,34 @@ export interface ProjectSectionProps {
   metrics?: ProjectMetric[];
   links?: ProjectLink[];
   children?: ReactNode;
-  className?: string;
   odd?: boolean;
 }
 
 export function MetricRow({ metrics }: { metrics: ProjectMetric[] }) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 my-8">
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: `repeat(${Math.min(metrics.length, 3)}, 1fr)`,
+        gap: "12px",
+        margin: "32px 0",
+      }}
+    >
       {metrics.map((m, i) => (
         <div
           key={i}
-          className="border border-[#C9CDD2]/10 bg-[#0A0A0B]/40 p-4 rounded-sm text-center"
+          style={{
+            border: "1px solid rgba(201,205,210,0.1)",
+            background: "rgba(10,10,11,0.4)",
+            padding: "20px 16px",
+            borderRadius: "2px",
+            textAlign: "center",
+          }}
         >
-          <div className="font-mono text-xl md:text-2xl text-[#B3001B] font-bold mb-1">
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: "22px", color: "var(--blood)", fontWeight: 700, marginBottom: "6px" }}>
             {m.value}
           </div>
-          <div className="font-mono text-[10px] text-[#7A7E85] tracking-widest uppercase">
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--steel)", letterSpacing: "0.2em", textTransform: "uppercase" }}>
             {m.label}
           </div>
         </div>
@@ -73,7 +76,6 @@ export function ProjectSection({
   metrics,
   links,
   children,
-  className,
   odd = false,
 }: ProjectSectionProps) {
   const prefersReduced = useReducedMotion();
@@ -81,117 +83,185 @@ export function ProjectSection({
   return (
     <section
       id={slug}
-      className={cn("relative py-20 md:py-28 border-t border-[#C9CDD2]/06", className)}
+      style={{
+        position: "relative",
+        padding: "80px 0 96px",
+        borderTop: "1px solid rgba(201,205,210,0.06)",
+        width: "100%",
+      }}
       aria-label={name}
     >
       {/* Subtle glow */}
       <div
-        className="absolute top-0 left-0 w-[300px] h-[200px] pointer-events-none"
         style={{
-          background:
-            "radial-gradient(ellipse, rgba(179,0,27,0.06) 0%, transparent 70%)",
+          position: "absolute",
+          top: 0,
+          left: odd ? "auto" : 0,
+          right: odd ? 0 : "auto",
+          width: "300px",
+          height: "200px",
+          background: "radial-gradient(ellipse, rgba(179,0,27,0.05) 0%, transparent 70%)",
+          pointerEvents: "none",
         }}
       />
 
-      <div className="max-w-7xl mx-auto px-6">
-        <div className={cn("grid lg:grid-cols-2 gap-12 lg:gap-20 items-start")}>
-          {/* Left side */}
+      <div style={{ width: "100%", maxWidth: "1280px", margin: "0 auto", padding: "0 40px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "80px",
+            alignItems: "start",
+          }}
+          className="project-grid"
+        >
+          {/* Content side */}
           <motion.div
             variants={odd ? slideInRight : slideInLeft}
             initial={prefersReduced ? "visible" : "hidden"}
             whileInView="visible"
             viewport={viewportOptions}
-            className={cn(odd ? "lg:order-2" : "lg:order-1")}
+            style={{ order: odd ? 2 : 1 }}
           >
-            {/* Project header */}
-            <div className="mb-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="h-px w-8 bg-[#B3001B]" />
-                <span className="font-mono text-[10px] text-[#B3001B] tracking-[0.25em] uppercase">
+            {/* Header */}
+            <div style={{ marginBottom: "24px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                <div style={{ height: "2px", width: "32px", background: "var(--blood)" }} />
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--blood)", letterSpacing: "0.25em", textTransform: "uppercase" }}>
                   {role}
                 </span>
               </div>
-              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-[#EAEAEA] leading-none mb-3">
+              <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(36px, 5vw, 64px)", color: "var(--bone)", lineHeight: 1, marginBottom: "12px" }}>
                 {name.toUpperCase()}
               </h2>
-              <p className="font-mono text-sm text-[#7A7E85] tracking-wide">
+              <p style={{ fontFamily: "var(--font-mono)", fontSize: "14px", color: "var(--steel)", letterSpacing: "0.05em" }}>
                 {tagline}
               </p>
             </div>
 
-            {/* Hero image (mobile: full width) */}
+            {/* Mobile hero image */}
             {heroImage && (
-              <div className="lg:hidden relative aspect-video w-full overflow-hidden rounded-sm mb-6 border border-[#C9CDD2]/10">
-                <Image
-                  src={heroImage}
-                  alt={heroImageAlt ?? name}
-                  fill
-                  className="object-cover"
-                  sizes="100vw"
-                />
+              <div
+                className="mobile-hero-img"
+                style={{
+                  display: "none",
+                  position: "relative",
+                  aspectRatio: "16/9",
+                  width: "100%",
+                  overflow: "hidden",
+                  borderRadius: "2px",
+                  border: "1px solid rgba(201,205,210,0.1)",
+                  marginBottom: "24px",
+                }}
+              >
+                <Image src={heroImage} alt={heroImageAlt ?? name} fill className="object-cover" sizes="100vw" />
               </div>
             )}
 
             {/* Copy */}
-            <div className="space-y-4 text-[#9A9A9A] leading-relaxed">
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px", color: "var(--ash)", fontSize: "16px", lineHeight: 1.75 }}>
               {copy}
             </div>
 
             {/* Metrics */}
             {metrics && <MetricRow metrics={metrics} />}
 
-            {/* Children (sub-projects, feature lists, etc.) */}
+            {/* Children */}
             {children}
 
             {/* Links */}
             {links && links.length > 0 && (
-              <div className="flex flex-wrap gap-3 mt-6">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", marginTop: "24px" }}>
                 {links.map((link, i) => (
-                  <ChromeButton
+                  <a
                     key={i}
                     href={link.href}
-                    variant={link.primary ? "pill" : "rect"}
-                    size="sm"
-                    external
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      padding: link.primary ? "12px 28px" : "10px 22px",
+                      borderRadius: link.primary ? "100px" : "2px",
+                      border: `1px solid ${link.primary ? "rgba(201,205,210,0.35)" : "rgba(201,205,210,0.15)"}`,
+                      background: "rgba(10,10,11,0.6)",
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "12px",
+                      letterSpacing: "0.15em",
+                      textTransform: "uppercase",
+                      color: link.primary ? "var(--bone)" : "var(--steel)",
+                      textDecoration: "none",
+                      transition: "border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.borderColor = "rgba(179,0,27,0.5)";
+                      (e.currentTarget as HTMLElement).style.color = "var(--bone)";
+                      (e.currentTarget as HTMLElement).style.boxShadow = "0 0 16px rgba(179,0,27,0.2)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.borderColor = link.primary ? "rgba(201,205,210,0.35)" : "rgba(201,205,210,0.15)";
+                      (e.currentTarget as HTMLElement).style.color = link.primary ? "var(--bone)" : "var(--steel)";
+                      (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                    }}
                   >
                     {link.label}
-                  </ChromeButton>
+                  </a>
                 ))}
               </div>
             )}
           </motion.div>
 
-          {/* Right side: hero image (desktop) */}
+          {/* Image side */}
           <motion.div
             variants={odd ? slideInLeft : slideInRight}
             initial={prefersReduced ? "visible" : "hidden"}
             whileInView="visible"
             viewport={viewportOptions}
-            className={cn(
-              "hidden lg:block",
-              odd ? "lg:order-1" : "lg:order-2"
-            )}
+            style={{ order: odd ? 1 : 2 }}
+            className="desktop-hero-img"
           >
             {heroImage ? (
-              <div className="relative aspect-[4/3] overflow-hidden rounded-sm border border-[#C9CDD2]/10">
+              <motion.div
+                whileHover={prefersReduced ? {} : { scale: 1.02 }}
+                transition={{ type: "spring", duration: 0.4, bounce: 0 }}
+                style={{
+                  position: "relative",
+                  aspectRatio: "4/3",
+                  overflow: "hidden",
+                  borderRadius: "2px",
+                  border: "1px solid rgba(201,205,210,0.1)",
+                  cursor: "default",
+                }}
+              >
                 <Image
                   src={heroImage}
                   alt={heroImageAlt ?? name}
                   fill
                   className="object-cover"
-                  sizes="(max-width: 1280px) 50vw, 640px"
+                  sizes="(max-width: 1024px) 100vw, 600px"
                 />
                 <div
-                  className="absolute inset-0 pointer-events-none"
                   style={{
-                    background:
-                      "linear-gradient(135deg, transparent 60%, rgba(179,0,27,0.15) 100%)",
+                    position: "absolute",
+                    inset: 0,
+                    background: "linear-gradient(135deg, transparent 60%, rgba(179,0,27,0.15) 100%)",
+                    pointerEvents: "none",
                   }}
                 />
-              </div>
+              </motion.div>
             ) : (
-              <div className="aspect-[4/3] border border-[#C9CDD2]/10 rounded-sm bg-[#0A0A0B]/60 flex items-center justify-center">
-                <span className="font-mono text-[#3A3D42] text-sm tracking-widest">
+              <div
+                style={{
+                  aspectRatio: "4/3",
+                  border: "1px solid rgba(201,205,210,0.08)",
+                  borderRadius: "2px",
+                  background: "rgba(10,10,11,0.6)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span style={{ fontFamily: "var(--font-mono)", color: "var(--gunmetal)", fontSize: "13px", letterSpacing: "0.2em" }}>
                   {name.toUpperCase()}
                 </span>
               </div>
@@ -199,6 +269,24 @@ export function ProjectSection({
           </motion.div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 900px) {
+          .project-grid {
+            grid-template-columns: 1fr !important;
+            gap: 32px !important;
+          }
+          .project-grid > div {
+            order: unset !important;
+          }
+          .desktop-hero-img {
+            display: none !important;
+          }
+          .mobile-hero-img {
+            display: block !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

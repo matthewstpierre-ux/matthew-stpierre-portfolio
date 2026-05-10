@@ -14,6 +14,8 @@ export function WracketSection({ odd }: WracketSectionProps) {
       slug="wracket-music"
       tagline="Music supervision · film, TV, advertising, gaming."
       role="Business Development · 2022–Present"
+      heroImage="/images/wracketlogo.webp"
+      heroImageAlt="Wracket Music"
       odd={odd}
       metrics={[
         { value: "Apple", label: "2022 product launch" },
@@ -22,6 +24,7 @@ export function WracketSection({ odd }: WracketSectionProps) {
       ]}
       links={[
         { label: "Wracket Music →", href: "https://www.wracketmusic.com/", primary: true },
+        { label: "Apple iPhone 14 →", href: "https://www.youtube.com/watch?v=Tnrbjw4hNU8" },
         { label: "Thanksgiving Trailer →", href: "https://youtu.be/KbU50SdL8zA" },
       ]}
       copy={

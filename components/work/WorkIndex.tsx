@@ -1,7 +1,12 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "framer-motion";
-import { fadeUp, staggerContainer, viewportOptions } from "@/lib/motion";
+
+const HaloBackground = dynamic(() => import("@/components/3d/HaloBackground"), {
+  ssr: false,
+});
+import { ease, fadeUp, staggerContainer, viewportOptions } from "@/lib/motion";
 import { LisninSection } from "./sections/LisninSection";
 import { SolMusicSection } from "./sections/SolMusicSection";
 import { WracketSection } from "./sections/WracketSection";
@@ -11,7 +16,7 @@ import { GetRektSection } from "./sections/GetRektSection";
 import { HighCutSection } from "./sections/HighCutSection";
 import { OshawaMusicSection } from "./sections/OshawaMusicSection";
 import { CanadianMusicWeekSection } from "./sections/CanadianMusicWeekSection";
-import { CurtainCallCard } from "./CurtainCallCard";
+import { CurtainCallInline } from "./CurtainCallInline";
 
 const workNav = [
   { label: "Lisnin", href: "#lisnin" },
@@ -30,26 +35,38 @@ export function WorkIndex() {
   const prefersReduced = useReducedMotion();
 
   return (
-    <div className="bg-[#0A0A0B] min-h-screen">
+    <div style={{ background: "var(--jet)", minHeight: "100vh", width: "100%" }}>
       {/* Work header */}
-      <div className="relative overflow-hidden py-24 md:py-32 border-b border-[#C9CDD2]/06">
+      <div
+        style={{
+          position: "relative",
+          padding: "96px 0 80px",
+          borderBottom: "1px solid rgba(201,205,210,0.06)",
+          overflow: "hidden",
+          width: "100%",
+        }}
+      >
+        {/* Animated halo behind header */}
+        {!prefersReduced && <HaloBackground opacity={0.3} />}
         <div
-          className="absolute inset-0 pointer-events-none"
           style={{
-            background:
-              "radial-gradient(ellipse at top center, rgba(179,0,27,0.1) 0%, transparent 50%)",
+            position: "absolute",
+            inset: 0,
+            background: "radial-gradient(ellipse at top center, rgba(179,0,27,0.1) 0%, transparent 50%)",
+            pointerEvents: "none",
           }}
         />
         <div
-          className="absolute inset-0 pointer-events-none"
           style={{
-            backgroundImage:
-              "linear-gradient(rgba(201,205,210,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(201,205,210,0.02) 1px, transparent 1px)",
+            position: "absolute",
+            inset: 0,
+            backgroundImage: "linear-gradient(rgba(201,205,210,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(201,205,210,0.02) 1px, transparent 1px)",
             backgroundSize: "60px 60px",
+            pointerEvents: "none",
           }}
         />
 
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div style={{ width: "100%", maxWidth: "1280px", margin: "0 auto", padding: "0 40px", position: "relative", zIndex: 1 }}>
           <motion.div
             variants={staggerContainer}
             initial={prefersReduced ? "visible" : "hidden"}
@@ -57,69 +74,103 @@ export function WorkIndex() {
           >
             <motion.div
               variants={fadeUp}
-              className="flex items-center gap-3 mb-4"
+              style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "16px" }}
             >
-              <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#B3001B]" />
-              <span className="font-mono text-[10px] text-[#B3001B] tracking-[0.3em] uppercase">
+              <div style={{ height: "2px", width: "60px", background: "linear-gradient(90deg, transparent, var(--blood))" }} />
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: "16px", color: "var(--blood)", letterSpacing: "0.3em", textTransform: "uppercase" }}>
                 The portfolio
               </span>
             </motion.div>
 
             <motion.h1
               variants={fadeUp}
-              className="font-display text-7xl md:text-9xl text-[#EAEAEA] leading-none mb-6"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(80px, 14vw, 160px)",
+                color: "var(--bone)",
+                lineHeight: 1,
+                marginBottom: "24px",
+              }}
             >
               WORK
             </motion.h1>
 
             <motion.p
               variants={fadeUp}
-              className="text-[#9A9A9A] text-lg max-w-xl"
+              style={{ color: "var(--ash)", fontSize: "18px", maxWidth: "560px", lineHeight: 1.6, marginBottom: "40px" }}
             >
-              10 years in the music industry. A handful of companies. Millions
-              of streams. A few things that didn't work, and a few that did.
+              10 years in the music industry. A handful of companies. Millions of streams.
+              A few things that didn't work, and a few that did.
             </motion.p>
-          </motion.div>
 
-          {/* Quick nav pills */}
-          <motion.div
-            variants={fadeUp}
-            initial={prefersReduced ? "visible" : "hidden"}
-            animate="visible"
-            transition={{ delay: 0.4 }}
-            className="flex flex-wrap gap-2 mt-10"
-          >
-            {workNav.map(({ label, href }) => (
-              <a
-                key={href}
-                href={href}
-                className="font-mono text-[10px] tracking-widest px-3 py-1.5 border border-[#C9CDD2]/10 rounded-full text-[#7A7E85] hover:border-[#B3001B]/40 hover:text-[#C9CDD2] transition-colors"
-              >
-                {label}
-              </a>
-            ))}
+            {/* Quick nav */}
+            <motion.div
+              variants={fadeUp}
+              style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}
+            >
+              {workNav.map(({ label, href }) => (
+                <a
+                  key={href}
+                  href={href}
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "11px",
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    padding: "8px 16px",
+                    border: "1px solid rgba(201,205,210,0.1)",
+                    borderRadius: "100px",
+                    color: "var(--steel)",
+                    textDecoration: "none",
+                    transition: "border-color 0.2s ease, color 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(179,0,27,0.4)";
+                    (e.currentTarget as HTMLElement).style.color = "var(--chrome)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,205,210,0.1)";
+                    (e.currentTarget as HTMLElement).style.color = "var(--steel)";
+                  }}
+                >
+                  {label}
+                </a>
+              ))}
+            </motion.div>
           </motion.div>
         </div>
       </div>
 
-      {/* Music Industry label */}
-      <div className="max-w-7xl mx-auto px-6 pt-16">
-        <motion.div
-          variants={fadeUp}
-          initial={prefersReduced ? "visible" : "hidden"}
-          whileInView="visible"
-          viewport={viewportOptions}
-          className="flex items-center gap-4 mb-4"
-        >
-          <div className="h-px flex-1 bg-[#C9CDD2]/06" />
-          <span className="font-mono text-[11px] text-[#3A3D42] tracking-[0.3em] uppercase">
+      {/* Section A divider */}
+      <div style={{ width: "100%", maxWidth: "1280px", margin: "0 auto", padding: "48px 40px 0" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+          <motion.div
+            initial={prefersReduced ? { scaleX: 1 } : { scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={viewportOptions}
+            transition={{ duration: 0.6, ease }}
+            style={{ height: "1px", flex: 1, background: "rgba(201,205,210,0.06)", transformOrigin: "left center" }}
+          />
+          <motion.span
+            variants={fadeUp}
+            initial={prefersReduced ? "visible" : "hidden"}
+            whileInView="visible"
+            viewport={viewportOptions}
+            style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--gunmetal)", letterSpacing: "0.3em", textTransform: "uppercase", whiteSpace: "nowrap" }}
+          >
             Section A — Music Industry
-          </span>
-          <div className="h-px flex-1 bg-[#C9CDD2]/06" />
-        </motion.div>
+          </motion.span>
+          <motion.div
+            initial={prefersReduced ? { scaleX: 1 } : { scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={viewportOptions}
+            transition={{ duration: 0.6, ease }}
+            style={{ height: "1px", flex: 1, background: "rgba(201,205,210,0.06)", transformOrigin: "right center" }}
+          />
+        </div>
       </div>
 
-      {/* Music sections */}
+      {/* Music project sections */}
       <LisninSection />
       <SolMusicSection odd />
       <WracketSection />
@@ -130,24 +181,37 @@ export function WorkIndex() {
       <OshawaMusicSection odd />
       <CanadianMusicWeekSection />
 
-      {/* Curtain Call divider */}
-      <div className="max-w-7xl mx-auto px-6 pt-16">
-        <motion.div
-          variants={fadeUp}
-          initial={prefersReduced ? "visible" : "hidden"}
-          whileInView="visible"
-          viewport={viewportOptions}
-          className="flex items-center gap-4 mb-4"
-        >
-          <div className="h-px flex-1 bg-[#C9CDD2]/06" />
-          <span className="font-mono text-[11px] text-[#3A3D42] tracking-[0.3em] uppercase">
+      {/* Section B divider */}
+      <div style={{ width: "100%", maxWidth: "1280px", margin: "0 auto", padding: "48px 40px 0" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+          <motion.div
+            initial={prefersReduced ? { scaleX: 1 } : { scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={viewportOptions}
+            transition={{ duration: 0.6, ease }}
+            style={{ height: "1px", flex: 1, background: "rgba(201,205,210,0.06)", transformOrigin: "left center" }}
+          />
+          <motion.span
+            variants={fadeUp}
+            initial={prefersReduced ? "visible" : "hidden"}
+            whileInView="visible"
+            viewport={viewportOptions}
+            style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--gunmetal)", letterSpacing: "0.3em", textTransform: "uppercase", whiteSpace: "nowrap" }}
+          >
             Section B — Curtain Call Digital
-          </span>
-          <div className="h-px flex-1 bg-[#C9CDD2]/06" />
-        </motion.div>
+          </motion.span>
+          <motion.div
+            initial={prefersReduced ? { scaleX: 1 } : { scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={viewportOptions}
+            transition={{ duration: 0.6, ease }}
+            style={{ height: "1px", flex: 1, background: "rgba(201,205,210,0.06)", transformOrigin: "right center" }}
+          />
+        </div>
       </div>
 
-      <CurtainCallCard />
+      {/* Curtain Call inline (no separate page) */}
+      <CurtainCallInline />
     </div>
   );
 }

@@ -1,1 +1,178 @@
-@import "../styles/globals.css";
+@import "tailwindcss";
+
+/* ─── Tailwind v4 theme (fonts only — following BOBS/Lisnin pattern) ─── */
+@theme {
+  --font-display: "Bungee Shade", cursive;
+  --font-body: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: "VT323", monospace;
+}
+
+/* ─── Brand tokens ────────────────────────────────────────────────────── */
+:root {
+  --jet: #0A0A0B;
+  --void: #000000;
+  --blood: #B3001B;
+  --hot: #E10A1F;
+  --chrome: #C9CDD2;
+  --steel: #7A7E85;
+  --gunmetal: #3A3D42;
+  --bone: #EAEAEA;
+  --ash: #9A9A9A;
+  --glow: rgba(225, 10, 31, 0.4);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── Base ────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--jet);
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--jet);
+  color: var(--bone);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--jet); }
+::-webkit-scrollbar-thumb { background: var(--gunmetal); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--blood); }
+
+/* ─── Chrome link underline ───────────────────────────────────────────── */
+.chrome-link {
+  position: relative;
+  text-decoration: none;
+}
+.chrome-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--chrome), var(--blood));
+  transition: width 0.3s var(--ease-out);
+}
+.chrome-link:hover::after { width: 100%; }
+
+/* ─── Scanline overlay ────────────────────────────────────────────────── */
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.05) 2px,
+    rgba(0, 0, 0, 0.05) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ─── Focus ───────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--blood);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ─── Skip nav ────────────────────────────────────────────────────────── */
+.skip-nav {
+  position: fixed;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  background: var(--blood);
+  color: var(--bone);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  border-radius: 4px;
+  transition: top 0.2s;
+}
+.skip-nav:focus { top: 1rem; }
+
+/* ─── Section ID scroll offset ───────────────────────────────────────── */
+[id] { scroll-margin-top: 80px; }
+
+/* ─── Y2K hero name glitch on hover ──────────────────────────────────── */
+@keyframes glitch-1 {
+  0%, 100% { clip-path: inset(0 0 90% 0); transform: translate(-2px, 0); }
+  20%       { clip-path: inset(30% 0 50% 0); transform: translate(2px, 0); }
+  40%       { clip-path: inset(60% 0 20% 0); transform: translate(-1px, 0); }
+  60%       { clip-path: inset(80% 0 5% 0); transform: translate(3px, 0); }
+  80%       { clip-path: inset(10% 0 70% 0); transform: translate(-2px, 0); }
+}
+@keyframes glitch-2 {
+  0%, 100% { clip-path: inset(50% 0 30% 0); transform: translate(2px, 0); }
+  25%       { clip-path: inset(5% 0 80% 0); transform: translate(-3px, 0); }
+  50%       { clip-path: inset(70% 0 10% 0); transform: translate(2px, 0); }
+  75%       { clip-path: inset(20% 0 60% 0); transform: translate(-1px, 0); }
+}
+
+.hero-name-glitch {
+  position: relative;
+  display: block;
+}
+.hero-name-glitch::before,
+.hero-name-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  background: inherit;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0;
+  pointer-events: none;
+}
+.hero-name-glitch::before {
+  color: var(--blood);
+  -webkit-text-fill-color: unset;
+  background: none;
+  opacity: 0;
+  text-shadow: none;
+}
+.hero-name-glitch::after {
+  color: var(--chrome);
+  -webkit-text-fill-color: unset;
+  background: none;
+  opacity: 0;
+  text-shadow: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-name-glitch:hover::before {
+    opacity: 0.7;
+    animation: glitch-1 0.4s steps(1) 1;
+    color: var(--blood);
+    mix-blend-mode: screen;
+  }
+  .hero-name-glitch:hover::after {
+    opacity: 0.5;
+    animation: glitch-2 0.4s steps(1) 1;
+    color: var(--chrome);
+    mix-blend-mode: screen;
+    animation-delay: 0.05s;
+  }
+}

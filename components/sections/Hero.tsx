@@ -3,9 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import dynamic from "next/dynamic";
-import { ChromeButton } from "@/components/ui/ChromeButton";
-import { fadeUp, staggerContainer, viewportOptions, ease } from "@/lib/motion";
-import { cn } from "@/lib/utils";
+import { fadeUp, staggerContainer, ease } from "@/lib/motion";
 
 const ChromeSigilHalo = dynamic(() => import("@/components/3d/ChromeSigilHalo"), {
   ssr: false,
@@ -13,7 +11,6 @@ const ChromeSigilHalo = dynamic(() => import("@/components/3d/ChromeSigilHalo"),
 
 export function Hero() {
   const prefersReduced = useReducedMotion();
-  const containerRef = useRef<HTMLDivElement>(null);
   const [mouseX, setMouseX] = useState(0);
   const [mouseY, setMouseY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
@@ -30,10 +27,8 @@ export function Hero() {
   useEffect(() => {
     if (prefersReduced || isMobile) return;
     const onMove = (e: MouseEvent) => {
-      const nx = (e.clientX / window.innerWidth) * 2 - 1;
-      const ny = (e.clientY / window.innerHeight) * 2 - 1;
-      setMouseX(nx);
-      setMouseY(ny);
+      setMouseX((e.clientX / window.innerWidth) * 2 - 1);
+      setMouseY((e.clientY / window.innerHeight) * 2 - 1);
     };
     window.addEventListener("mousemove", onMove);
     return () => window.removeEventListener("mousemove", onMove);
@@ -41,32 +36,32 @@ export function Hero() {
 
   return (
     <section
-      ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#000000]"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      style={{ background: "#000000" }}
       aria-label="Hero"
     >
       {/* Halo background */}
-      {!isMobile && (
+      {!isMobile && !prefersReduced && (
         <motion.div
           className="absolute inset-0 z-0"
-          style={prefersReduced ? {} : { scale: haloScale, opacity: haloOpacity }}
+          style={{ scale: haloScale, opacity: haloOpacity }}
         >
           <ChromeSigilHalo className="w-full h-full" />
         </motion.div>
       )}
 
-      {/* CSS gradient fallback for mobile / reduced motion */}
+      {/* Mobile/reduced fallback gradient */}
       {(isMobile || prefersReduced) && (
         <div
           className="absolute inset-0 z-0"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(179,0,27,0.15) 0%, rgba(10,10,11,0.9) 60%, #000 100%)",
+              "radial-gradient(ellipse at center, rgba(179,0,27,0.18) 0%, rgba(10,10,11,0.9) 60%, #000 100%)",
           }}
         />
       )}
 
-      {/* Subtle grid overlay */}
+      {/* Grid overlay */}
       <div
         className="absolute inset-0 z-[1] pointer-events-none"
         style={{
@@ -78,118 +73,196 @@ export function Hero() {
 
       {/* Main content */}
       <motion.div
-        className="relative z-10 text-center px-6 max-w-4xl mx-auto"
+        className="relative z-10 text-center px-6 w-full"
         style={prefersReduced ? {} : { y: textY }}
       >
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-        >
-          {/* Y2K decorative line */}
+        <div style={{ maxWidth: "900px", margin: "0 auto" }}>
           <motion.div
-            variants={fadeUp}
-            className="flex items-center justify-center gap-3 mb-6"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
           >
-            <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#B3001B]" />
-            <span className="font-mono text-[10px] text-[#B3001B] tracking-[0.3em] uppercase">
-              Portfolio · 2026
-            </span>
-            <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#B3001B]" />
-          </motion.div>
+            {/* Decorative label */}
+            <motion.div
+              variants={fadeUp}
+              className="flex items-center justify-center mb-10"
+              style={{ gap: "20px" }}
+            >
+              <div style={{ height: "2px", width: "80px", background: "linear-gradient(90deg, transparent, var(--blood))" }} />
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: "16px", color: "var(--blood)", letterSpacing: "0.3em", textTransform: "uppercase" }}>
+                Portfolio · 2026
+              </span>
+              <div style={{ height: "2px", width: "80px", background: "linear-gradient(90deg, var(--blood), transparent)" }} />
+            </motion.div>
 
-          {/* Main name */}
-          <motion.h1
-            variants={fadeUp}
-            className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.9] mb-4"
-            style={
-              prefersReduced
-                ? {}
-                : {
-                    transform: `translate(${mouseX * -8}px, ${mouseY * -4}px)`,
-                    transition: "transform 0.1s ease-out",
-                  }
-            }
-          >
-            <span
-              className="block"
+            {/* Name */}
+            <motion.h1
+              variants={fadeUp}
               style={{
-                background:
-                  "linear-gradient(180deg, #EAEAEA 0%, #9A9A9A 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(64px, 12vw, 140px)",
+                lineHeight: 0.88,
+                marginBottom: "28px",
+                transform: prefersReduced
+                  ? undefined
+                  : `translate(${mouseX * -8}px, ${mouseY * -4}px)`,
+                transition: prefersReduced ? undefined : "transform 0.1s ease-out",
               }}
             >
-              MATTHEW
-            </span>
-            <span
-              className="block"
+              <span
+                className="hero-name-glitch"
+                data-text="MATTHEW"
+                style={{
+                  display: "block",
+                  background: "linear-gradient(180deg, #EAEAEA 0%, #9A9A9A 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                MATTHEW
+              </span>
+              <span
+                className="hero-name-glitch"
+                data-text="ST PIERRE"
+                style={{
+                  display: "block",
+                  background: "linear-gradient(180deg, #EAEAEA 0%, #C9CDD2 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                ST PIERRE
+              </span>
+            </motion.h1>
+
+            {/* Role */}
+            <motion.p
+              variants={fadeUp}
               style={{
-                background:
-                  "linear-gradient(180deg, #EAEAEA 0%, #C9CDD2 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
+                fontFamily: "var(--font-mono)",
+                fontSize: "18px",
+                color: "var(--steel)",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                marginBottom: "20px",
+                transform: prefersReduced
+                  ? undefined
+                  : `translate(${mouseX * -4}px, ${mouseY * -2}px)`,
+                transition: prefersReduced ? undefined : "transform 0.15s ease-out",
               }}
             >
-              ST PIERRE
-            </span>
-          </motion.h1>
+              Music industry builder ·{" "}
+              <span style={{ color: "var(--chrome)" }}>Founder, Lisnin.io</span>
+            </motion.p>
 
-          {/* Role tagline */}
-          <motion.p
-            variants={fadeUp}
-            className="font-mono text-sm md:text-base text-[#7A7E85] tracking-[0.2em] uppercase mb-3"
-            style={
-              prefersReduced
-                ? {}
-                : {
-                    transform: `translate(${mouseX * -4}px, ${mouseY * -2}px)`,
-                    transition: "transform 0.15s ease-out",
-                  }
-            }
-          >
-            Music industry builder · Founder,{" "}
-            <span className="text-[#C9CDD2]">Lisnin.io</span>
-          </motion.p>
+            {/* Sub-headline */}
+            <motion.p
+              variants={fadeUp}
+              style={{
+                color: "var(--ash)",
+                fontSize: "20px",
+                maxWidth: "600px",
+                margin: "0 auto 48px",
+                lineHeight: 1.6,
+              }}
+            >
+              Helping the next generation of independent artists make a living
+              from their music.
+            </motion.p>
 
-          {/* Sub-headline */}
-          <motion.p
-            variants={fadeUp}
-            className="text-[#9A9A9A] text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed"
-          >
-            Helping the next generation of independent artists make a living
-            from their music.
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            variants={fadeUp}
-            className="flex flex-col sm:flex-row gap-4 items-center justify-center"
-          >
-            <ChromeButton href="/work" variant="pill" size="lg">
-              View Work
-            </ChromeButton>
-            <ChromeButton href="/#contact" variant="rect" size="lg">
-              Get In Touch
-            </ChromeButton>
+            {/* CTAs */}
+            <motion.div
+              variants={fadeUp}
+              className="flex flex-col sm:flex-row items-center justify-center"
+              style={{ gap: "20px" }}
+            >
+              <a
+                href="/work"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "18px 48px",
+                  borderRadius: "100px",
+                  border: "1px solid rgba(201,205,210,0.35)",
+                  background: "rgba(10,10,11,0.7)",
+                  backdropFilter: "blur(8px)",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "15px",
+                  letterSpacing: "0.2em",
+                  textTransform: "uppercase",
+                  color: "var(--bone)",
+                  textDecoration: "none",
+                  position: "relative",
+                  overflow: "hidden",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(179,0,27,0.6)";
+                  (e.currentTarget as HTMLElement).style.boxShadow = "0 0 24px rgba(179,0,27,0.35)";
+                  (e.currentTarget as HTMLElement).style.color = "#fff";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,205,210,0.35)";
+                  (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                  (e.currentTarget as HTMLElement).style.color = "var(--bone)";
+                }}
+              >
+                View Work
+              </a>
+              <a
+                href="/#contact"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "18px 48px",
+                  borderRadius: "4px",
+                  border: "1px solid rgba(201,205,210,0.2)",
+                  background: "transparent",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "15px",
+                  letterSpacing: "0.2em",
+                  textTransform: "uppercase",
+                  color: "var(--steel)",
+                  textDecoration: "none",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,205,210,0.4)";
+                  (e.currentTarget as HTMLElement).style.color = "var(--bone)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,205,210,0.2)";
+                  (e.currentTarget as HTMLElement).style.color = "var(--steel)";
+                }}
+              >
+                Get In Touch
+              </a>
+            </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
       </motion.div>
 
       {/* Scroll indicator */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
+        className="absolute bottom-8 left-1/2 flex flex-col items-center"
+        style={{ transform: "translateX(-50%)", zIndex: 10, gap: "8px" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5, duration: 0.6 }}
       >
-        <span className="font-mono text-[9px] text-[#3A3D42] tracking-widest">
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--gunmetal)", letterSpacing: "0.3em" }}>
           SCROLL
         </span>
         <motion.div
-          className="w-px h-8 bg-gradient-to-b from-[#3A3D42] to-transparent"
+          style={{
+            width: "1px",
+            height: "40px",
+            background: "linear-gradient(180deg, var(--gunmetal), transparent)",
+          }}
           animate={{ scaleY: [1, 0.5, 1] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
         />

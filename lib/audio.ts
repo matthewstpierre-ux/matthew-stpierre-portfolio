@@ -21,9 +21,9 @@ export async function initAudio(): Promise<void> {
 
   if (!ambientSound) {
     ambientSound = new Howl({
-      src: ["/audio/ambient-loop.mp3"],
+      src: ["/audio/ambient-loop.wav"],
       loop: true,
-      volume: 0.15,
+      volume: 0.05, // matrix.wav is loud — keep at 5%
       html5: true,
     });
   }
@@ -31,14 +31,14 @@ export async function initAudio(): Promise<void> {
   if (!hoverSound) {
     hoverSound = new Howl({
       src: ["/audio/hover-beep.mp3"],
-      volume: 0.06,
+      volume: 0.04,
     });
   }
 
   if (!clickSound) {
     clickSound = new Howl({
       src: ["/audio/click.mp3"],
-      volume: 0.1,
+      volume: 0.07,
     });
   }
 }
@@ -50,8 +50,9 @@ export function playAmbient(): void {
 }
 
 export function stopAmbient(): void {
-  ambientSound?.fade(0.15, 0, 500);
-  setTimeout(() => ambientSound?.stop(), 500);
+  if (!ambientSound) return;
+  ambientSound.fade(ambientSound.volume(), 0, 600);
+  setTimeout(() => ambientSound?.stop(), 600);
 }
 
 export function playHover(): void {
