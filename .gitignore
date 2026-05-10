@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Raw GLBs (too large for git — only ship optimized versions)
 /public/models/raw/
+
+# Source audio at project root (actual assets live in /public/audio/)
+matrix.wav
