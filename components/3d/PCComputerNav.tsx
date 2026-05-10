@@ -34,17 +34,17 @@ function PCModel({
   const bootTimer = useRef(0);
 
   useEffect(() => {
-    // Metallic red tint — brand-matched chrome with blood red emissive
+    // Chrome silver with subtle blood-red emissive — matches HaloBackground
     scene.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
         const applyMaterial = (m: THREE.Material) => {
           if (m instanceof THREE.MeshStandardMaterial) {
-            m.color = new THREE.Color("#8A3030");
-            m.metalness = 0.9;
-            m.roughness = 0.15;
+            m.color = new THREE.Color("#C9CDD2");
+            m.metalness = 0.95;
+            m.roughness = 0.05;
             m.emissive = new THREE.Color("#B3001B");
-            m.emissiveIntensity = 0.12;
+            m.emissiveIntensity = 0.06;
             m.needsUpdate = true;
           }
         };

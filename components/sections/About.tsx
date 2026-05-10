@@ -165,12 +165,12 @@ export function About() {
             >
               <div style={{ background: "var(--jet)", borderRadius: "2px", overflow: "hidden", aspectRatio: "3/4", position: "relative" }}>
                 <Image
-                  src="/images/matthew-headshot-hd.jpg"
+                  src="/images/matthew-headshot.png"
                   alt="Matthew St Pierre"
                   fill
                   className="object-cover object-top"
                   sizes="(max-width: 900px) calc(100vw - 80px), 380px"
-                  quality={100}
+                  unoptimized
                   priority
                 />
                 <div
