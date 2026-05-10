@@ -10,7 +10,7 @@ export function Lights() {
       {/* Fill: cool dim below */}
       <pointLight position={[-2, -3, 2]} intensity={0.6} color="#3a4a6a" />
       {/* Ambient */}
-      <ambientLight intensity={0.2} color="#0a0a1a" />
+      <ambientLight intensity={0.45} color="#1a1a2a" />
     </>
   );
 }

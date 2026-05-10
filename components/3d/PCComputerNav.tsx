@@ -39,33 +39,33 @@ function PCModel({
       const n = meshName.toLowerCase();
 
       if (n.includes("monitor")) {
-        // CRT bezel + screen — silver frame, strong red emissive so screen glows
+        // CRT monitor — silver bezel with subtle red screen glow (frame+screen share one mesh)
         return new THREE.MeshStandardMaterial({
-          color: new THREE.Color("#9A9EA4"),
-          metalness: 0.72,
-          roughness: 0.22,
+          color: new THREE.Color("#A8ACB2"),
+          metalness: 0.55,
+          roughness: 0.35,
           emissive: new THREE.Color("#B3001B"),
-          emissiveIntensity: 0.6,
+          emissiveIntensity: 0.28,
         });
       }
       if (n.includes("keyboard")) {
-        // Keyboard — darker silver, slightly matte, visually recessed
+        // Keyboard — mid silver, slightly matte, visually recessed
         return new THREE.MeshStandardMaterial({
-          color: new THREE.Color("#7A8088"),
-          metalness: 0.82,
-          roughness: 0.28,
+          color: new THREE.Color("#8A8E96"),
+          metalness: 0.60,
+          roughness: 0.38,
           emissive: new THREE.Color("#B3001B"),
           emissiveIntensity: 0.02,
         });
       }
       if (n.includes("mouse")) {
-        // Mouse — bright chrome, same family as main body
+        // Mouse — light silver, same family as main body
         return new THREE.MeshStandardMaterial({
-          color: new THREE.Color("#C9CDD2"),
-          metalness: 0.93,
-          roughness: 0.08,
+          color: new THREE.Color("#D8DCE0"),
+          metalness: 0.58,
+          roughness: 0.28,
           emissive: new THREE.Color("#B3001B"),
-          emissiveIntensity: 0.05,
+          emissiveIntensity: 0.04,
         });
       }
       if (n.includes("pencil case")) {
@@ -96,13 +96,13 @@ function PCModel({
           roughness: 0.92,
         });
       }
-      // Computer base — hero chrome silver with faint red blush
+      // Computer base — light silver, lowered metalness so color shows without env map
       return new THREE.MeshStandardMaterial({
-        color: new THREE.Color("#C9CDD2"),
-        metalness: 0.95,
-        roughness: 0.05,
+        color: new THREE.Color("#D4D8DC"),
+        metalness: 0.55,
+        roughness: 0.32,
         emissive: new THREE.Color("#B3001B"),
-        emissiveIntensity: 0.07,
+        emissiveIntensity: 0.06,
       });
     };
 
