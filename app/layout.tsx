@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     description:
       "Founder of Lisnin.io. Building tools and platforms for independent artists.",
     type: "website",
-    url: "https://matthewstpierre.com",
+    url: "https://www.matthewstpierre.xyz",
     images: [{ url: "/images/matthewstpierrethumbnail.png", width: 1200, height: 630 }],
   },
   twitter: {
