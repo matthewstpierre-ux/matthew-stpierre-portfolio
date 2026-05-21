@@ -719,8 +719,16 @@
     align-items: baseline;
   }
   @media (max-width: 880px) {
-    .step { grid-template-columns: 60px 1fr; gap: 16px; padding: 20px 0; }
-    .step .step-when, .step .step-date { grid-column: 2; }
+    .step {
+      grid-template-columns: 48px 1fr;
+      gap: 0 16px;
+      padding: 24px 0;
+      align-items: start;
+    }
+    .step .step-when,
+    .step .step-desc,
+    .step .step-date { grid-column: 2; }
+    .step .step-date { text-align: left; margin-top: 8px; }
   }
   .step-num {
     font-family: var(--display);
@@ -746,8 +754,6 @@
     text-transform: uppercase;
     text-align: right;
   }
-  @media (max-width: 880px) { .step .step-date { text-align: left; margin-top: 6px; } }
-
   /* ============================================================
      INVESTMENT SUMMARY
      ============================================================ */
@@ -794,6 +800,39 @@
   }
   .summary-table tr.highlighted td { border-bottom-color: rgba(255,32,48,0.2); }
   .summary-table tr.highlighted td .price-cell { color: var(--red); text-shadow: 0 0 12px var(--red-glow); }
+
+  @media (max-width: 620px) {
+    .summary-table,
+    .summary-table thead,
+    .summary-table tbody,
+    .summary-table tr { display: block; width: 100%; }
+    .summary-table thead { display: none; }
+    .summary-table tr {
+      border: 1px solid var(--border);
+      margin-bottom: 14px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .summary-table tr.highlighted { border-color: rgba(255,32,48,0.35); }
+    .summary-table td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .summary-table td:last-child { border-bottom: none; }
+    .summary-table td::before {
+      content: attr(data-label);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      flex-shrink: 0;
+    }
+  }
 
   .included-strip {
     display: flex; gap: 20px; flex-wrap: wrap;
@@ -925,6 +964,12 @@
     content: "—  —";
     margin: 0 16px;
     color: var(--red);
+  }
+
+  @media (max-width: 520px) {
+    .included-strip { flex-direction: column; gap: 10px; }
+    .included-strip .label { border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 10px; }
+    .section-head .right { display: none; }
   }
 
   /* ============================================================
@@ -1731,16 +1776,16 @@
       </thead>
       <tbody>
         <tr>
-          <td><span class="pkg-cell">Essential Roofing Website</span></td>
-          <td class="mono-cell">7 days</td>
-          <td class="mono-cell">2 rounds</td>
-          <td><span class="price-cell">$695<span class="curr">CAD</span></span></td>
+          <td data-label="Package"><span class="pkg-cell">Essential Roofing Website</span></td>
+          <td data-label="Turnaround" class="mono-cell">7 days</td>
+          <td data-label="Revisions" class="mono-cell">2 rounds</td>
+          <td data-label="Investment"><span class="price-cell">$695<span class="curr">CAD</span></span></td>
         </tr>
         <tr class="highlighted">
-          <td><span class="pkg-cell">Growth Roofing Website</span></td>
-          <td class="mono-cell">10 days</td>
-          <td class="mono-cell">3 rounds</td>
-          <td><span class="price-cell">$1,295<span class="curr">CAD</span></span></td>
+          <td data-label="Package"><span class="pkg-cell">Growth Roofing Website</span></td>
+          <td data-label="Turnaround" class="mono-cell">10 days</td>
+          <td data-label="Revisions" class="mono-cell">3 rounds</td>
+          <td data-label="Investment"><span class="price-cell">$1,295<span class="curr">CAD</span></span></td>
         </tr>
       </tbody>
     </table>
